@@ -315,6 +315,8 @@ class Model():
         self.route_lines.append(f'@{self.blueprint}.route(\'/\', methods=["POST"])\n')
         self.route_lines.append(f'def add_one_{self.item_name}():\n')
         self.route_lines.append(f'    req = request.get_json(force=True)\n')
+        self.route_lines.append(f'    prev_count = db.session.query({self.class_name}).count()')
+
         add_one_string = ""
         for key in self.keys:
             if (key["name"] == "id"):
@@ -324,7 +326,8 @@ class Model():
         self.route_lines.append(f'    new_{self.item_name} = {self.class_name}({add_one_string[:-1]})\n')
         self.route_lines.append(f'    db.session.add(new_{self.item_name})\n')
         self.route_lines.append(f'    db.session.commit()\n\n')
-        self.route_lines.append(f'    return {{"message": "success"}}\n\n')
+        self.route_lines.append(f'    current_count = db.session.query({self.class_name}).count()')
+        self.route_lines.append(f'    return {{"message": "success", "current count": current_count, "previous count": prev_count}}\n\n')
 
     def create_multiple_route(self):
         self.route_lines.append(f'@auth_required\n')
@@ -332,6 +335,7 @@ class Model():
         self.route_lines.append(f'def add_multiple_{self.table_name}():\n')
         self.route_lines.append(f'    req = request.get_json(force=True)\n')
         self.route_lines.append(f'    {self.table_name} = req.get("{self.table_name}", None)\n')
+        self.route_lines.append(f'    prev_count = db.session.query({self.class_name}).count()')
         self.route_lines.append(f'    for {self.item_name} in {self.table_name}:\n')
         add_one_string = ""
         for key in self.keys:
@@ -343,7 +347,8 @@ class Model():
         self.route_lines.append(f'        new_{self.item_name} = {self.class_name}({add_one_string[:-1]})\n')
         self.route_lines.append(f'        db.session.add(new_{self.item_name})\n')
         self.route_lines.append(f'        db.session.commit()\n\n')
-        self.route_lines.append(f'    return {{"message": "success"}}\n\n')
+        self.route_lines.append(f'    current_count = db.session.query({self.class_name}).count()')
+        self.route_lines.append(f'    return {{"message": "success", "current count": current_count, "previous count": prev_count}}\n\n')
 
 
     def create_post_routes(self):
@@ -403,10 +408,12 @@ class Model():
         self.route_lines.append(f'@auth_required\n')
         self.route_lines.append(f'@{self.blueprint}.route(\'/<int:id>\', methods=["delete"])\n')
         self.route_lines.append(f'def delete_one_{self.item_name}(id):\n')
+        self.route_lines.append(f'    prev_count = db.session.query({self.class_name}).count()')
         self.route_lines.append(f'    temp_{self.item_name} = {self.class_name}.query.get(id)\n')
         self.route_lines.append(f'    db.session.delete(temp_{self.item_name})\n')
         self.route_lines.append(f'    db.session.commit()\n\n')
-        self.route_lines.append(f'    return {{"message": "success"}}\n\n')
+        self.route_lines.append(f'    current_count = db.session.query({self.class_name}).count()')
+        self.route_lines.append(f'    return {{"message": "success", "current count": current_count, "previous count": prev_count}}\n\n')
 
     def delete_multiple_route(self):
         self.route_lines.append(f'@auth_required\n')
@@ -414,11 +421,13 @@ class Model():
         self.route_lines.append(f'def delete_multiple_{self.table_name}():\n')
         self.route_lines.append(f'    req = request.get_json(force=True)\n')
         self.route_lines.append(f'    {self.table_name} = req.get("{self.table_name}")\n')
+        self.route_lines.append(f'    prev_count = db.session.query({self.class_name}).count()')
         self.route_lines.append(f'    for {self.item_name} in {self.table_name}:\n')
         self.route_lines.append(f'        temp_{self.item_name} = {self.class_name}.query.get({self.item_name})\n')
         self.route_lines.append(f'        db.session.delete(temp_{self.item_name})\n')
         self.route_lines.append(f'    db.session.commit()\n\n')
-        self.route_lines.append(f'    return {{"message": "success"}}\n\n')
+        self.route_lines.append(f'    current_count = db.session.query({self.class_name}).count()')
+        self.route_lines.append(f'    return {{"message": "success", "current count": current_count, "previous count": prev_count}}\n\n')
 
     def create_delete_routes(self):
         self.delete_one_route()
