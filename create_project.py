@@ -328,7 +328,7 @@ class Model():
 
     def create_multiple_route(self):
         self.route_lines.append(f'@auth_required\n')
-        self.route_lines.append(f'@{self.blueprint}.route(\'/\', methods=["POST"])\n')
+        self.route_lines.append(f'@{self.blueprint}.route(\'/multi\', methods=["POST"])\n')
         self.route_lines.append(f'def add_multiple_{self.table_name}():\n')
         self.route_lines.append(f'    req = request.get_json(force=True)\n')
         self.route_lines.append(f'    {self.table_name} = req.get("{self.table_name}", None)\n')
