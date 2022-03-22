@@ -340,7 +340,7 @@ class Model():
             add_multiple_string += f'{key["name"]} = {self.item_name}["{key["name"]}"],'
         self.route_lines.append(f'        new_{self.item_name} = {self.class_name}({add_multiple_string[:-1]})\n')
         self.route_lines.append(f'        db.session.add(new_{self.item_name})\n')
-        self.route_lines.append(f'    db.session.commit()\n\n')
+        self.route_lines.append(f'        db.session.commit()\n\n')
         self.route_lines.append(f'    return {{"message": "success"}}\n\n')
 
 
@@ -351,7 +351,7 @@ class Model():
     def get_one_route(self):
         self.route_lines.append(f'@auth_required\n')
         self.route_lines.append(f'@{self.blueprint}.route(\'/<int:id>\')\n')
-        self.route_lines.append(f'def get_one_{self.item_name}():\n')
+        self.route_lines.append(f'def get_one_{self.item_name}(id):\n')
         self.route_lines.append(f'    return {{"{self.item_name}": ({self.class_name}.query.get(id)).to_dict()}}\n\n')
 
     def get_multiple_route(self):
