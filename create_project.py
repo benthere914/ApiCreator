@@ -333,12 +333,14 @@ class Model():
         self.route_lines.append(f'    req = request.get_json(force=True)\n')
         self.route_lines.append(f'    {self.table_name} = req.get("{self.table_name}", None)\n')
         self.route_lines.append(f'    for {self.item_name} in {self.table_name}:\n')
-        add_multiple_string = ""
+        add_one_string = ""
         for key in self.keys:
             if (key["name"] == "id"):
                 continue
-            add_multiple_string += f'{key["name"]} = {self.item_name}["{key["name"]}"],'
-        self.route_lines.append(f'        new_{self.item_name} = {self.class_name}({add_multiple_string[:-1]})\n')
+            self.route_lines.append(f'        {key["name"]} = {self.item_name}["{key["name"]}"] or None\n')
+            add_one_string += f'{key["name"]} = {key["name"]},'
+
+        self.route_lines.append(f'        new_{self.item_name} = {self.class_name}({add_one_string[:-1]})\n')
         self.route_lines.append(f'        db.session.add(new_{self.item_name})\n')
         self.route_lines.append(f'        db.session.commit()\n\n')
         self.route_lines.append(f'    return {{"message": "success"}}\n\n')
