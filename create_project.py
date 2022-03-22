@@ -11,6 +11,7 @@ class Model():
         self.types = {
             "db.Integer": ['int', 'INT', 'SERIAL', 'serial', 'integer' 'INTEGER'],
             "db.String(255)": ['VARCHAR', 'varchar', 'str'],
+            "db.String()": ["TEXT", "text"],
             "db.Boolean": ['boolean', "BOOLEAN", 'bool', 'BOOL'],
             "JSON": ['json', 'JSON', 'map', 'MAP'],
             "db.DateTime": ["DATETIME", "TIMESTAMP", "datetime", "timestamp"],
