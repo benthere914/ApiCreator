@@ -13,7 +13,8 @@ class Model():
             "db.String(255)": ['VARCHAR', 'varchar', 'str'],
             "db.Boolean": ['boolean', "BOOLEAN", 'bool', 'BOOL'],
             "JSON": ['json', 'JSON', 'map', 'MAP'],
-            "db.DateTime": ["DATETIME", "TIMESTAMP", "datetime", "timestamp"]
+            "db.DateTime": ["DATETIME", "TIMESTAMP", "datetime", "timestamp"],
+            "db.Numeric": ["NUMERIC", "DECIMAL", "numeric", "decimal"]
         }
         self.model_lines = []
         self.route_lines = []
@@ -323,7 +324,7 @@ class Model():
         self.route_lines.append(f'    new_{self.item_name} = {self.class_name}({add_one_string[:-1]})\n')
         self.route_lines.append(f'    db.session.add(new_{self.item_name})\n')
         self.route_lines.append(f'    db.session.commit()\n\n')
-        self.route_lines.append(f'    return {{"message": "success"}}')
+        self.route_lines.append(f'    return {{"message": "success"}}\n\n')
 
     def create_multiple_route(self):
         self.route_lines.append(f'@auth_required\n')
@@ -340,7 +341,7 @@ class Model():
         self.route_lines.append(f'        new_{self.item_name} = {self.class_name}({add_multiple_string[:-1]})\n')
         self.route_lines.append(f'        db.session.add(new_{self.item_name})\n')
         self.route_lines.append(f'    db.session.commit()\n\n')
-        self.route_lines.append(f'    return {{"message": "success"}}')
+        self.route_lines.append(f'    return {{"message": "success"}}\n\n')
 
 
     def create_post_routes(self):
@@ -352,14 +353,12 @@ class Model():
         self.route_lines.append(f'@{self.blueprint}.route(\'/<int:id>\')\n')
         self.route_lines.append(f'def get_one_{self.item_name}():\n')
         self.route_lines.append(f'    return {{"{self.item_name}": ({self.class_name}.query.get(id)).to_dict()}}\n\n')
-        self.route_lines.append(f'    return {{"message": "success"}}')
 
     def get_multiple_route(self):
         self.route_lines.append(f'@auth_required\n')
         self.route_lines.append(f'@{self.blueprint}.route(\'/\')\n')
         self.route_lines.append(f'def get_all_{self.table_name}():\n')
         self.route_lines.append(f'    return {{\"{self.table_name}": [{self.item_name}.to_dict() for {self.item_name} in {self.class_name}.query.all()]}}\n\n')
-        self.route_lines.append(f'    return {{"message": "success"}}')
 
 
     def create_get_routes(self):
@@ -377,7 +376,7 @@ class Model():
                 continue
             self.route_lines.append(f'    current_{self.item_name}.{key["name"]} = req.get("{key["name"]}", None)\n')
         self.route_lines.append(f'    db.session.commit()\n\n')
-        self.route_lines.append(f'    return {{"message": "success"}}')
+        self.route_lines.append(f'    return {{"message": "success"}}\n\n')
 
     def update_multiple_route(self):
         self.route_lines.append(f'@auth_required\n')
@@ -392,7 +391,7 @@ class Model():
                 continue
             self.route_lines.append(f'        temp_{self.item_name}.{key["name"]} = current_{self.item_name}["{key["name"]}"]\n')
         self.route_lines.append(f'        db.session.commit()\n\n')
-        self.route_lines.append(f'    return {{"message": "success"}}')
+        self.route_lines.append(f'    return {{"message": "success"}}\n\n')
 
     def create_put_routes(self):
         self.update_one_route()
@@ -405,7 +404,7 @@ class Model():
         self.route_lines.append(f'    temp_{self.item_name} = {self.class_name}.query.get(id)\n')
         self.route_lines.append(f'    db.session.delete(temp_{self.item_name})\n')
         self.route_lines.append(f'    db.session.commit()\n\n')
-        self.route_lines.append(f'    return {{"message": "success"}}')
+        self.route_lines.append(f'    return {{"message": "success"}}\n\n')
 
     def delete_multiple_route(self):
         self.route_lines.append(f'@auth_required\n')
@@ -417,7 +416,7 @@ class Model():
         self.route_lines.append(f'        temp_{self.item_name} = {self.class_name}.query.get({self.item_name})\n')
         self.route_lines.append(f'        db.session.delete(temp_{self.item_name})\n')
         self.route_lines.append(f'    db.session.commit()\n\n')
-        self.route_lines.append(f'    return {{"message": "success"}}')
+        self.route_lines.append(f'    return {{"message": "success"}}\n\n')
 
     def create_delete_routes(self):
         self.delete_one_route()
